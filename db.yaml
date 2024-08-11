@@ -1,0 +1,4 @@
+mysql_host: 'localhost'
+mysql_user: 'root'
+mysql_password: '2357Sasan'
+mysql_db: 'cars'

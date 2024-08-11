@@ -1,58 +1,41 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask_mysqldb import MySQL
+import yaml
 
 app = Flask(__name__)
 
-# Replace this with your MySQL configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@localhost:3306/MYSQL80'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+# Use yaml.safe_load() for loading the YAML configuration file
+db = yaml.safe_load(open('db.yaml'))
+app.config['MYSQL_HOST'] = db['mysql_host']
+app.config['MYSQL_USER'] = db['mysql_user']
+app.config['MYSQL_PASSWORD'] = db['mysql_password']
+app.config['MYSQL_DB'] = db['mysql_db']
+
+mysql = MySQL(app)
 
 
-class Cars(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    color = db.Column(db.String(20), nullable=False)
-    km = db.Column(db.Float, nullable=False)
-
-    def __repr__(self):
-        return f'<Car {self.id}>'
-
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-
-@app.route('/add', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def add_car():
-    app.logger.info('Entered add_car route')
     if request.method == 'POST':
-        try:
-            color = request.form['color']
-            km = float(request.form['km'])
-            new_car = Cars(color=color, km=km)
-            db.session.add(new_car)
-            db.session.commit()
-            app.logger.info('New car added successfully')
-            return redirect(url_for('show_cars'))
-        except Exception as e:
-            app.logger.error(f'Error adding car: {e}')
-            return f"There was an issue adding your car: {str(e)}"
+        carDetails = request.form
+        name = carDetails['name']
+        color = carDetails['color']
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO mycars(name, color) VALUES(%s, %s)", (name, color))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('list_cars'))
     return render_template('add_car.html')
 
 
 @app.route('/cars')
-def show_cars():
-    cars = Cars.query.all()
-    return render_template('show_cars.html', cars=cars)
-
-
-@app.route('/test')
-def test():
-    return "Test route is working!"
+def list_cars():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT name, color FROM mycars")
+    cars = cur.fetchall()
+    cur.close()
+    return render_template('list_cars.html', cars=cars)
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Create tables if they don't exist
     app.run(debug=True)
