@@ -4,7 +4,7 @@ import yaml
 
 app = Flask(__name__)
 
-# Use yaml.safe_load() for loading the YAML configuration file
+# Load the database configuration from the YAML file
 db = yaml.safe_load(open('db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_USER'] = db['mysql_user']
@@ -20,8 +20,14 @@ def add_car():
         carDetails = request.form
         name = carDetails['name']
         color = carDetails['color']
+        count_of_airbags = carDetails['count_of_airbags']
+        has_sunroof = 'has_sunroof' in carDetails  # Checkbox, so check if it is in the form data
+        first_release_day = carDetails['first_release_day']
+
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO mycars(name, color) VALUES(%s, %s)", (name, color))
+        cur.execute(
+            "INSERT INTO mycars(name, color, count_of_airbags, has_sunroof, first_release_day) VALUES(%s, %s, %s, %s, %s)",
+            (name, color, count_of_airbags, has_sunroof, first_release_day))
         mysql.connection.commit()
         cur.close()
         return redirect(url_for('list_cars'))
@@ -31,10 +37,26 @@ def add_car():
 @app.route('/cars')
 def list_cars():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT name, color FROM mycars")
+    cur.execute("SELECT id, name, color, count_of_airbags, has_sunroof, first_release_day FROM mycars ORDER BY id")
     cars = cur.fetchall()
     cur.close()
     return render_template('list_cars.html', cars=cars)
+
+
+@app.route('/delete_car/<int:id>', methods=['POST'])
+def delete_car(id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM mycars WHERE id = %s", [id])
+    mysql.connection.commit()
+
+    # Re-number the remaining IDs
+    cur.execute("SET @new_id = 0;")
+    cur.execute("UPDATE mycars SET id = (@new_id := @new_id + 1) ORDER BY id;")
+    cur.execute("ALTER TABLE mycars AUTO_INCREMENT = 1;")
+
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for('list_cars'))
 
 
 if __name__ == '__main__':
