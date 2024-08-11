@@ -34,13 +34,15 @@ def add_car():
     return render_template('add_car.html')
 
 
-@app.route('/cars')
+@app.route('/cars', methods=['GET'])
 def list_cars():
+    search_query = request.args.get('search', '')
     cur = mysql.connection.cursor()
-    cur.execute("SELECT id, name, color, count_of_airbags, has_sunroof, first_release_day FROM mycars ORDER BY id")
+    query = "SELECT id, name, color, count_of_airbags, has_sunroof, first_release_day FROM mycars WHERE name LIKE %s ORDER BY id"
+    cur.execute(query, ('%' + search_query + '%',))
     cars = cur.fetchall()
     cur.close()
-    return render_template('list_cars.html', cars=cars)
+    return render_template('list_cars.html', cars=cars, search_query=search_query)
 
 
 @app.route('/delete_car/<int:id>', methods=['POST'])

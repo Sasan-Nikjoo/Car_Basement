@@ -7,6 +7,10 @@
 
 {% block body %}
     <h1>Car List</h1>
+    <form action="{{ url_for('list_cars') }}" method="GET" class="search-form">
+        <input type="text" name="search" placeholder="Search by car name" value="{{ search_query }}" required>
+        <button type="submit">Search</button>
+    </form>
     <div class="card-container">
         {% for car in cars %}
         <div class="card">
