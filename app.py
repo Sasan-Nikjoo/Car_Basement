@@ -21,28 +21,31 @@ def add_car():
         name = carDetails['name']
         color = carDetails['color']
         count_of_airbags = carDetails['count_of_airbags']
-        has_sunroof = 'has_sunroof' in carDetails  # Checkbox, so check if it is in the form data
+        has_sunroof = 'has_sunroof' in carDetails
         first_release_day = carDetails['first_release_day']
+        image_url = carDetails['image_url']
 
         cur = mysql.connection.cursor()
         cur.execute(
-            "INSERT INTO mycars(name, color, count_of_airbags, has_sunroof, first_release_day) VALUES(%s, %s, %s, %s, %s)",
-            (name, color, count_of_airbags, has_sunroof, first_release_day))
+            "INSERT INTO mycars(name, color, count_of_airbags, has_sunroof, first_release_day, image_url) VALUES(%s, %s, %s, %s, %s, %s)",
+            (name, color, count_of_airbags, has_sunroof, first_release_day, image_url))
         mysql.connection.commit()
         cur.close()
         return redirect(url_for('list_cars'))
     return render_template('add_car.html')
 
 
+
 @app.route('/cars', methods=['GET'])
 def list_cars():
     search_query = request.args.get('search', '')
     cur = mysql.connection.cursor()
-    query = "SELECT id, name, color, count_of_airbags, has_sunroof, first_release_day FROM mycars WHERE name LIKE %s ORDER BY id"
+    query = "SELECT id, name, color, count_of_airbags, has_sunroof, first_release_day, image_url FROM mycars WHERE name LIKE %s ORDER BY id"
     cur.execute(query, ('%' + search_query + '%',))
     cars = cur.fetchall()
     cur.close()
     return render_template('list_cars.html', cars=cars, search_query=search_query)
+
 
 
 @app.route('/delete_car/<int:id>', methods=['POST'])

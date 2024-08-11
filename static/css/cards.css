@@ -1,8 +1,8 @@
 /* static/css/cards.css */
 
 .card-container {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns layout */
     gap: 16px;
     justify-content: center;
 }
@@ -13,7 +13,6 @@
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 16px;
-    width: 300px;
     text-align: center;
     transition: transform 0.3s;
 }
@@ -32,6 +31,14 @@
     margin: 8px 0;
     font-size: 1em;
     color: #666;
+}
+
+.card img {
+    width: 150px; /* Fixed width */
+    height: 150px; /* Fixed height */
+    object-fit: inherit; /* Resize image to cover the box, maintaining aspect ratio and cropping as needed */
+    margin: 16px 0;
+    border-radius: 8px; /* Optional: round the corners of the images */
 }
 
 .card button {
