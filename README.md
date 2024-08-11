@@ -1,6 +1,8 @@
 # Car_Basement
 
 A simple web application built with Flask that allows users to search for cars and view their details, similar to how IMDb works for movies.
+
+
 Features
 
     Car Search: Search for cars by make, model, or year.
