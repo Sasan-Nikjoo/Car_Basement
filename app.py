@@ -29,26 +29,50 @@ def add_car():
         has_sunroof = 'has_sunroof' in carDetails
         first_release_day = carDetails['first_release_day']
         image_url = carDetails['image_url']
+        company_id = carDetails['company_id']
 
         cur = mysql.connection.cursor()
         cur.execute(
-            "INSERT INTO mycars(name, color, count_of_airbags, has_sunroof, first_release_day, image_url) VALUES(%s, %s, %s, %s, %s, %s)",
-            (name, color, count_of_airbags, has_sunroof, first_release_day, image_url))
+            "INSERT INTO mycars(name, color, count_of_airbags, has_sunroof, first_release_day, image_url, company_id) VALUES(%s, %s, %s, %s, %s, %s, %s)",
+            (name, color, count_of_airbags, has_sunroof, first_release_day, image_url, company_id))
         mysql.connection.commit()
         cur.close()
         return redirect(url_for('list_cars'))
-    return render_template('add_car.html')
+    else:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT id, name FROM companies")
+        companies = cur.fetchall()
+        cur.close()
+
+        return render_template('add_car.html', companies=companies)
 
 
 @app.route('/cars', methods=['GET'])
 def list_cars():
     search_query = request.args.get('search', '')
+    company_id = request.args.get('company_id', '')
+
     cur = mysql.connection.cursor()
-    query = "SELECT id, name, color, count_of_airbags, has_sunroof, first_release_day, image_url FROM mycars WHERE name LIKE %s ORDER BY id"
-    cur.execute(query, ('%' + search_query + '%',))
+    query = """
+        SELECT mycars.id, mycars.name, mycars.color, mycars.count_of_airbags, mycars.has_sunroof, mycars.first_release_day, mycars.image_url, companies.name 
+        FROM mycars 
+        JOIN companies ON mycars.company_id = companies.id 
+        WHERE mycars.name LIKE %s
+    """
+
+    if company_id:
+        query += " AND mycars.company_id = %s"
+        cur.execute(query, ('%' + search_query + '%', company_id))
+    else:
+        cur.execute(query, ('%' + search_query + '%',))
+
     cars = cur.fetchall()
+    cur.execute("SELECT id, name FROM companies")
+    companies = cur.fetchall()
     cur.close()
-    return render_template('list_cars.html', cars=cars, search_query=search_query)
+
+    return render_template('list_cars.html', cars=cars, search_query=search_query, companies=companies,
+                           selected_company_id=company_id)
 
 
 @app.route('/delete_car/<int:id>', methods=['POST'])

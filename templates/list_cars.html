@@ -8,9 +8,19 @@
 {% block body %}
     <h1>Car List</h1>
     <form action="{{ url_for('list_cars') }}" method="GET" class="search-form">
-        <input type="text" name="search" placeholder="Search by car name" value="{{ search_query }}" required>
-        <button type="submit">Search</button>
-    </form>
+    <input type="text" name="search" placeholder="Search by car name" value="{{ search_query }}" required>
+
+    <select name="company_id" onchange="this.form.submit()">
+        <option value="">All Companies</option>
+        {% for company in companies %}
+        <option value="{{ company[0] }}" {% if selected_company_id == company[0] %}selected{% endif %}>{{ company[1] }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Search</button>
+</form>
+
+
     <div class="card-container">
         {% for car in cars %}
         <a href="{{ url_for('car_detail', id=car[0]) }}" class="card-link">
