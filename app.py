@@ -14,7 +14,12 @@ app.config['MYSQL_DB'] = db['mysql_db']
 mysql = MySQL(app)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
+def home():
+    return redirect(url_for('list_cars'))
+
+
+@app.route('/add_car', methods=['GET', 'POST'])
 def add_car():
     if request.method == 'POST':
         carDetails = request.form
@@ -60,6 +65,18 @@ def delete_car(id):
     mysql.connection.commit()
     cur.close()
     return redirect(url_for('list_cars'))
+
+
+@app.route('/car/<int:id>', methods=['GET'])
+def car_detail(id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, name, color, count_of_airbags, has_sunroof, first_release_day, image_url FROM mycars WHERE id = %s", [id])
+    car = cur.fetchone()
+    cur.close()
+    if car:
+        return render_template('car_detail.html', car=car)
+    else:
+        return "Car not found", 404
 
 
 if __name__ == '__main__':

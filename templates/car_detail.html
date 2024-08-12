@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Car Detail</title>
+{% endblock %}
+
+{% block body %}
+    <h1>Car Details</h1>
+    <div class="car-detail">
+        <h2>{{ car[1] }}</h2>
+        <p><strong>Color:</strong> {{ car[2] }}</p>
+        <p><strong>Airbags:</strong> {{ car[3] }}</p>
+        <p><strong>Sunroof:</strong> {{ 'Yes' if car[4] else 'No' }}</p>
+        <p><strong>First Release Day:</strong> {{ car[5] }}</p>
+        {% if car[6] %}
+        <img src="{{ car[6] }}" alt="{{ car[1] }}" style="max-width: 100%; height: auto;">
+        {% endif %}
+    </div>
+    <a href="{{ url_for('list_cars') }}">Back to Car List</a>
+{% endblock %}
