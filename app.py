@@ -35,7 +35,6 @@ def add_car():
     return render_template('add_car.html')
 
 
-
 @app.route('/cars', methods=['GET'])
 def list_cars():
     search_query = request.args.get('search', '')
@@ -45,7 +44,6 @@ def list_cars():
     cars = cur.fetchall()
     cur.close()
     return render_template('list_cars.html', cars=cars, search_query=search_query)
-
 
 
 @app.route('/delete_car/<int:id>', methods=['POST'])
