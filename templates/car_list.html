@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='car_list.css') }}">
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+        <!-- Mode Toggle Button -->
+        <button class="mode-toggle" onclick="toggleMode()">🌙</button>
+
+        <!-- Toggle Button -->
+        <button class="toggle-taskbar" onclick="toggleTaskbar()">☰</button>
+
+        <!-- Taskbar -->
+        <div class="taskbar">
+            <ul>
+                <li><a href="#">Filter by Company</a></li>
+                <li><a href="#">Filter by Color</a></li>
+                <li><a href="#">Filter by Price</a></li>
+                <!-- Add more filters as needed -->
+            </ul>
+        </div>
+
+        <!-- Car List Section -->
+        <div class="car-list-section">
+            <!-- Search Form -->
+            <form method="POST" action="{{ url_for('car_list') }}" class="search-form">
+                <input type="text" name="search" placeholder="Search by car name" required>
+                <button type="submit">Search</button>
+            </form>
+
+            <!-- Car List -->
+            <div class="car-list">
+                {% for car in cars %}
+                    <div class="car-card">
+                        <img src="{{ car['image_url'] }}" alt="{{ car['name'] }}">
+                        <h2>{{ car['name'] }}</h2>
+                        <p>Color: {{ car['color'] }}</p>
+                        <p>First Release: {{ car['first_release_day'] }}</p>
+                        <p>Horse Power: {{ car['horse_power'] }}</p>
+                        <p>Price: ${{ car['price'] }}</p>
+                        <p>Max Speed: {{ car['max_speed'] }} km/h</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTaskbar() {
+            document.querySelector('.main-container').classList.toggle('taskbar-visible');
+        }
+
+        function toggleMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

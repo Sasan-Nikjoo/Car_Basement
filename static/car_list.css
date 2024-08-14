@@ -1,0 +1,221 @@
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    color: #000000; /* Default text color */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0; /* Light text color for dark mode */
+}
+
+/* Main Container */
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    transition: margin-right 0.3s ease; /* Smooth transition for margin adjustment */
+}
+
+/* Car List Section */
+.car-list-section {
+    flex: 1; /* Adjust this based on your layout needs */
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    transition: margin-right 0.3s ease; /* Smooth transition for margin adjustment */
+}
+
+
+/* Search Form Styles */
+.search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    transition: margin-right 0.3s ease; /* Smooth transition for margin adjustment */
+}
+
+.search-form input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    width: 300px;
+}
+
+.search-form button {
+    padding: 10px 15px;
+    font-size: 1em;
+    margin-left: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.search-form button:hover {
+    background-color: #0056b3;
+}
+
+body.dark-mode .search-form input[type="text"] {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+body.dark-mode .search-form button {
+    background-color: #444;
+}
+
+body.dark-mode .search-form button:hover {
+    background-color: #555;
+}
+
+/* Car List Styles */
+.car-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-content: center;
+    transition: margin-right 0.3s ease; /* Smooth transition for margin adjustment */
+}
+
+/* Car Card Styles */
+.car-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+.car-card img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.car-card h2 {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+.car-card p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+body.dark-mode .car-card {
+    background-color: #333;
+    color: #e0e0e0;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+/* Toggle Taskbar Button */
+.toggle-taskbar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.toggle-taskbar:hover {
+    background-color: #0056b3;
+}
+
+body.dark-mode .toggle-taskbar {
+    background-color: #444;
+}
+
+body.dark-mode .toggle-taskbar:hover {
+    background-color: #555;
+}
+
+/* Mode Toggle Button */
+.mode-toggle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: transparent;
+    color: #000000;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+body.dark-mode .mode-toggle {
+    color: #e0e0e0;
+}
+
+
+
+
+
+/* Taskbar Styles */
+.taskbar {
+    width: 250px;
+    background-color: #f8f9fa;
+    color: #000;
+    position: absolute;
+    right: -250px; /* Hidden initially */
+    top: 0;
+    bottom: 0;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 999;
+    transition: right 0.3s ease;
+}
+
+.taskbar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.taskbar li {
+    margin-bottom: 10px;
+}
+
+.taskbar a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.taskbar a:hover {
+    text-decoration: underline;
+}
+
+body.dark-mode .taskbar {
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+body.dark-mode .taskbar a {
+    color: #bbb;
+}
+
+/* Main Container Adjustment for Taskbar Visibility */
+.taskbar-visible .taskbar {
+    right: 0;
+}
+
+.taskbar-visible .car-list-section {
+    margin-right: 250px; /* Adjust margin when taskbar is visible */
+}
